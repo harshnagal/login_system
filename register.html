@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+   
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            $("#firstname").on('blur', function() {
+                let firstname = $(this).val();
+                if (firstname) {
+                    if(firstname.length<4){
+                        $("#fnerror").text("minimum length < 4")
+                    }
+                    else if(/[^a-zA-Z]/.test(firstname)){
+                        $("#fnerror").text(" Alphabets only")
+                    } 
+                    else{
+                        $("#fnerror").text("");
+                        }
+
+                }
+            }); 
+
+            $("#lastname").on('blur', function() {
+                let lastname = $(this).val();
+                if (lastname) {
+                    if(lastname.length<4){
+                        $("#lnerror").text("minimum length < 4")
+                    }
+                    else if(/[^a-zA-Z]/.test(lastname)){
+                        $("#lnerror").text(" Alphabets only")
+                    } 
+                    else{
+                        $("#lnerror").text("");
+                        }
+
+                }
+            }); 
+            
+            
+            $("#dob").on('blur', function() {
+                let dob = $(this).val();
+                if (dob) {
+                    let dobDate = new Date(dob); // Convert the input into a Date object
+                    let today = new Date(); // Get today's date
+
+                    // Calculate age
+                    let ageDifference = today - dobDate; // Difference in milliseconds
+                    let ageDate = new Date(ageDifference); // Convert the difference into a Date object
+                    let age = Math.abs(ageDate.getUTCFullYear() - 1970); // Calculate the age
+
+                    // Check if age is less than 18
+                    if (age < 18) {
+                        $("#dob-error").text("18+ users allowed only");
+                    } else {
+                        $("#dob-error").text("");
+                    }
+                } else {
+                    $("#dob-error").text("");
+                }
+            });
+
+            $("#phone").on('blur', function() {
+                let phone = $(this).val();
+                if (phone) {
+                    if(phone.length<10){
+                        $("#phone-error").text("minimum length < 10")
+                    }
+                    else{
+                        $("#phone-error").text("");
+                        }
+
+                }
+            }); 
+         
+            $("#email").on('blur', function() {
+                let email = $(this).val();
+                if (email) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'check_email.php',
+                        data: { email: email },
+                        success: function(response) {
+                            if (response == 'exists') {
+                                $("#email-error").text("Email already exists.");
+                            } else {
+                                $("#email-error").text("");
+                            }
+                        }
+                    });
+                }
+            });
+
+            $("#password").on('blur', function() {
+                let password = $(this).val();
+                if (password) {
+                    if(/\s/.test(password)){
+                        $("#password-error").text("(string passwords only)")
+                    }
+                    else{
+                        $("#password-error").text("");
+                        }
+
+                }
+            }); 
+
+            $("#registerForm").submit(function(event) {
+                let valid = true;
+                $("#span").each(function() {
+                    if ($(this).val() == "") {
+                        $(this).next('.error').text("This field is required.");
+                        valid = false;
+                    } 
+                    else {
+                        $(this).next('.error').text("");
+                    }
+                });
+                if (!valid) {
+                    event.preventDefault();
+                    alert("fill the form and fill it correctly");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <form  id="registerForm" method="POST" action="register.php">
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" name="firstname" minlength="4" required>
+        <strong><span id="fnerror" class="error" style="color:red;" ></span></strong>
+        <!-- min-length 4 ; alphabets only -->
+        <br><br>
+        
+
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" name="lastname" minlength="4" required>
+        <strong><span id="lnerror" class="error" style="color:red;"></span></strong><br>
+        <!-- min-length 4 ; alphabets only -->
+        <br><br>
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required>
+        <strong><span id="dob-error" class="error" style="color:red;" ></span></strong><br>
+        <!-- 18+ users allowed only -->
+        <br><br>
+       
+
+        <label for="address">Address:</label>
+        <input type="varchar" id="address" name="address" required><br><br>
+       
+
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" minlength="10" pattern="\d{10}" required>
+        <strong><span id="phone-error" class="error" style="color:red;" ></span></strong><br><br> 
+        
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <strong><span id="email-error" class="error" style="color:red;" ></span></strong><br><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" minlength="6" required>
+        <strong><span id="password-error" class="error" style="color:red;" ></span></strong><br><br>
+        
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
