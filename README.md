@@ -1,6 +1,6 @@
 to make the server of the file 
 
-used command in mysql (xampp server)
+used command in mysql (xampp server)||mysql workbench 8.3 ver.
 
 create a database
 
